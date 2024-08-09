@@ -68,7 +68,7 @@ db
       });
     }));
 
-    const shares = await Share.bulkCreate([
+    await Share.bulkCreate([
       { symbol: 'AAP', currentPrice: 123.45 },
       { symbol: 'GOO', currentPrice: 987.65 },
       { symbol: 'MIC', currentPrice: 456.78 },
@@ -81,26 +81,18 @@ db
       { symbol: 'NET', currentPrice: 890.12 },
     ]);
 
-     // Create 5 logical transactions for each user
      const transactions = [
       { shareSymbol: 'AAP', buyOrSell: 'BUY', quantity: 10, price: 120.45 },
-      { shareSymbol: 'AAP', buyOrSell: 'SELL', quantity: 5, price: 123.45 },
+      { shareSymbol: 'AAP', buyOrSell: 'SELL', quantity: 5, price: 155.45 },
       { shareSymbol: 'MIC', buyOrSell: 'BUY', quantity: 100, price: 430.78 },
       { shareSymbol: 'MIC', buyOrSell: 'SELL', quantity: 15, price: 420.00 },
+      { shareSymbol: 'INT', buyOrSell: 'BUY', quantity: 1230, price: 250.78 },
+      { shareSymbol: 'INT', buyOrSell: 'BUY', quantity: 1000, price: 305.12 },
     ];
 
 
     // Create 5 portfolio shares for each portfolio
     await Promise.all(portfolios.map(async portfolio => {
-      await PortfolioShare.create({
-        portfolioId: portfolio.id,
-        shareSymbol: 'AAP',
-      });
-      await PortfolioShare.create({
-        portfolioId: portfolio.id,
-        shareSymbol: 'MIC',
-      });
-     
       for (const transaction of transactions) {
         await Transaction.create({
           portfolioId: portfolio.id,

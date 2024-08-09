@@ -43,32 +43,37 @@ const Transaction = db.define('Transaction', {
   }
 }, {
   timestamps: false,
+  
   hooks: {
     afterCreate: async (transaction) => {
+      let portfolioShare = await PortfolioShare.findOne({
+        where: {
+          portfolioId: transaction.portfolioId,
+          shareSymbol: transaction.shareSymbol,
+        },
+      });
+      if (!portfolioShare) {
+        portfolioShare = await PortfolioShare.create({
+          portfolioId: transaction.portfolioId,
+          shareSymbol: transaction.shareSymbol,
+        });
+      }
       if (transaction.buyOrSell === 'SELL') {
-        const portfolioShare = await PortfolioShare.findOne({
+        const totalQuantity = await Transaction.sum('quantity', {
           where: {
             portfolioId: transaction.portfolioId,
             shareSymbol: transaction.shareSymbol,
+            buyOrSell: 'BUY',
+          },
+        }) - await Transaction.sum('quantity', {
+          where: {
+            portfolioId: transaction.portfolioId,
+            shareSymbol: transaction.shareSymbol,
+            buyOrSell: 'SELL',
           },
         });
-        if (portfolioShare) {
-          const totalQuantity = await Transaction.sum('quantity', {
-            where: {
-              portfolioId: transaction.portfolioId,
-              shareSymbol: transaction.shareSymbol,
-              buyOrSell: 'BUY',
-            },
-          }) - await Transaction.sum('quantity', {
-            where: {
-              portfolioId: transaction.portfolioId,
-              shareSymbol: transaction.shareSymbol,
-              buyOrSell: 'SELL',
-            },
-          });
-          if (totalQuantity <= 0) {
-            await portfolioShare.destroy();
-          }
+        if (totalQuantity <= 0) {
+          await portfolioShare.destroy();
         }
       }
     },
