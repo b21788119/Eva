@@ -1,3 +1,5 @@
+<h3>Case Overview</h3>
+<br>
 <ul>
   <li>
     This repository contains a basic REST API built using Node.js, Express.js, Sequelize, and PostgreSQL, all packaged with Docker for easy deployment and scalability.
@@ -6,13 +8,13 @@
     The API is designed with a monolithic architecture but can be easily converted to a microservices architecture if needed.
   </li>
   <li>
-    Certain complexities, such as handling race conditions, managing share quantities in the market (considered infinite), and detailed buy/sell operations, have been intentionally omitted.
+    Certain problems, such as handling race conditions, managing share quantities in the market (considered infinite), and detailed buy/sell operations, have been intentionally omitted.
   </li>
   <li>
-    Some statistical calculations for portfolios and portfolio shares have been considered, and the repository will be updated as I dive deeper into making the app more applicable to real-world scenarios.
+    Some statistical calculations for portfolios and portfolio shares have been tried, and the repository will be updated as I dive deeper into making the app more applicable to real-world scenarios.
   </li>
   <li>
-    Some endpoints were created just as templates. Some of them require admin privileges and authorization.
+    Some endpoints were created just as templates. Some of them may require admin privileges and authorization if used in a live environment.
   </li>
   <li>
     <strong>Basic Representation of Entities and Relationships:</strong>
