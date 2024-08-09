@@ -6,7 +6,9 @@ const PortfolioShare = require('../models/portfolioShare');
 exports.createTransaction = async (req, res, next) => {
   try {
     const { portfolioId, shareSymbol, buyOrSell, quantity } = req.body;
-    const portfolio = await Portfolio.findByPk(portfolioId);
+    const portfolio = await Portfolio.findByPk(portfolioId, {
+      include: [{ model: PortfolioShare, as: 'shares' }],
+    });
     if (!portfolio) {
       return res.status(404).json({ error: 'Portfolio not found' });
     }
@@ -14,23 +16,31 @@ exports.createTransaction = async (req, res, next) => {
     if (!share) {
       return res.status(404).json({ error: 'Share not found' });
     }
-    
-    const portfolioShare = await PortfolioShare.findOne({
-      where: {
-        portfolioId: portfolioId,
-        shareSymbol: shareSymbol,
-      },
-    });
-    if(portfolioShare && buyOrSell==="SELL" && portfolioShare.quantity < quantity){
-      return res.status(404).json({ error: 'Insufficient share quantity' });
-
+    const portfolioShare = portfolio.shares.find((share) => share.shareSymbol === shareSymbol);
+    if (buyOrSell === 'SELL' && portfolioShare) {
+      const currentQuantity = await Transaction.sum('quantity', {
+        where: {
+          portfolioId,
+          shareSymbol,
+          buyOrSell: 'BUY',
+        },
+      }) - await Transaction.sum('quantity', {
+        where: {
+          portfolioId,
+          shareSymbol,
+          buyOrSell: 'SELL',
+        },
+      });
+      if (currentQuantity < quantity) {
+        return res.status(404).json({ error: 'Insufficient share quantity' });
+      }
     }
     const transaction = await Transaction.create({
       portfolioId,
       shareSymbol,
       buyOrSell,
       quantity,
-      price: share.currentRate,
+      price: share.currentPrice,
     });
     res.json(transaction);
   } catch (err) {
@@ -95,28 +105,3 @@ exports.deleteTransaction = async (req, res, next) => {
   }
 };
 
-const updatePortfolioShare = async (transaction) => {
-  const portfolioShare = await PortfolioShare.findOne({
-    where: {
-      portfolioId: transaction.portfolioId,
-      shareSymbol: transaction.shareSymbol,
-    },
-  });
-  if (transaction.buyOrSell === 'BUY') {
-    if (portfolioShare) {
-      portfolioShare.quantity += transaction.quantity;
-      await portfolioShare.save();
-    } else {
-      await PortfolioShare.create({
-        portfolioId: transaction.portfolioId,
-        shareSymbol: transaction.shareSymbol,
-        quantity: transaction.quantity,
-      });
-    }
-  } else if (transaction.buyOrSell === 'SELL') {
-    if (portfolioShare) {
-      portfolioShare.quantity -= transaction.quantity;
-      await portfolioShare.save();
-    }
-  }
-};
