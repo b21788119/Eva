@@ -6,7 +6,7 @@
     <img src="/BasicErDiagram.png" width="200">
   </li>
   <li>
-    <strong>Basic Representation of Entities and Relationships:</strong>
+    <strong>DB Schema:</strong>
     <br>
     <br>
     <img src="/DB Schema.png" width="200">
