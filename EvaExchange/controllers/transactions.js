@@ -14,6 +14,17 @@ exports.createTransaction = async (req, res, next) => {
     if (!share) {
       return res.status(404).json({ error: 'Share not found' });
     }
+    
+    const portfolioShare = await PortfolioShare.findOne({
+      where: {
+        portfolioId: portfolioId,
+        shareSymbol: shareSymbol,
+      },
+    });
+    if(portfolioShare && buyOrSell==="SELL" && portfolioShare.quantity < quantity){
+      return res.status(404).json({ error: 'Insufficient share quantity' });
+
+    }
     const transaction = await Transaction.create({
       portfolioId,
       shareSymbol,
@@ -21,7 +32,6 @@ exports.createTransaction = async (req, res, next) => {
       quantity,
       price: share.currentRate,
     });
-    await updatePortfolioShare(transaction);
     res.json(transaction);
   } catch (err) {
     next(err);

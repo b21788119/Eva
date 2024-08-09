@@ -61,52 +61,57 @@ db
       { name: 'Barbossa', email: 'barbossa@gmail.com' },
     ]);
 
-    // Create 5 portfolios for each user
     const portfolios = await Promise.all(users.map(user => {
       return Portfolio.create({
         userId: user.id,
+        name: 'Share Portfolio'
       });
     }));
 
-    // Create 10 shares
     const shares = await Share.bulkCreate([
-      { symbol: 'AAP', currentRate: 100.00,lastRate:86.95 },
-      { symbol: 'GOO', currentRate: 200.00, lastRate:82.95},
-      { symbol: 'AMZ', currentRate: 300.00 , lastRate:386.95},
-      { symbol: 'FBT', currentRate: 400.00 , lastRate:8.95},
-      { symbol: 'MSF', currentRate: 500.00 , lastRate:12.95},
-      { symbol: 'INT', currentRate: 60.50 , lastRate:90.95},
-      { symbol: 'CIS', currentRate: 70.25 , lastRate:1123.95},
-      { symbol: 'ORC', currentRate: 80.75 , lastRate:89.95},
-      { symbol: 'IBM', currentRate: 90.00 , lastRate:88.95},
-      { symbol: 'HPQ', currentRate: 100.50 , lastRate:105.15},
+      { symbol: 'AAP', currentPrice: 123.45 },
+      { symbol: 'GOO', currentPrice: 987.65 },
+      { symbol: 'MIC', currentPrice: 456.78 },
+      { symbol: 'INT', currentPrice: 321.09 },
+      { symbol: 'CIS', currentPrice: 654.32 },
+      { symbol: 'SUN', currentPrice: 789.01 },
+      { symbol: 'ORC', currentPrice: 901.23 },
+      { symbol: 'BIN', currentPrice: 234.56 },
+      { symbol: 'TEL', currentPrice: 567.89 },
+      { symbol: 'NET', currentPrice: 890.12 },
     ]);
 
+     // Create 5 logical transactions for each user
+     const transactions = [
+      { shareSymbol: 'AAP', buyOrSell: 'BUY', quantity: 10, price: 120.45 },
+      { shareSymbol: 'AAP', buyOrSell: 'SELL', quantity: 5, price: 123.45 },
+      { shareSymbol: 'MIC', buyOrSell: 'BUY', quantity: 100, price: 430.78 },
+      { shareSymbol: 'MIC', buyOrSell: 'SELL', quantity: 15, price: 420.00 },
+    ];
+
+
     // Create 5 portfolio shares for each portfolio
-    await Promise.all(portfolios.map(portfolio => {
-      return Promise.all(shares.slice(0, 5).map(share => {
-        return PortfolioShare.create({
+    await Promise.all(portfolios.map(async portfolio => {
+      await PortfolioShare.create({
+        portfolioId: portfolio.id,
+        shareSymbol: 'AAP',
+      });
+      await PortfolioShare.create({
+        portfolioId: portfolio.id,
+        shareSymbol: 'MIC',
+      });
+     
+      for (const transaction of transactions) {
+        await Transaction.create({
           portfolioId: portfolio.id,
-          shareSymbol: share.symbol,
-          quantity: 10,
+          shareSymbol: transaction.shareSymbol,
+          buyOrSell: transaction.buyOrSell,
+          quantity: transaction.quantity,
+          price: transaction.price,
         });
-      }));
+      }
+      
     }));
-
-    // Create 5 transactions for each portfolio share
-    await Promise.all(portfolios.map(portfolio => {
-      return Promise.all(shares.slice(0, 5).map(share => {
-        return Transaction.create({
-          portfolioId: portfolio.id,
-          shareSymbol: share.symbol,
-          buyOrSell: 'BUY',
-          quantity: 10,
-          price: 100.00,
-        });
-      }));
-    }));
-
-
   })
   .catch((error) => {
     console.error("Error syncing database:", error);

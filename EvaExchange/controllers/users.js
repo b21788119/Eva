@@ -15,20 +15,13 @@ exports.getUsers = (req, res, next) => {
 //get user by id
 exports.getUser = (req, res, next) => {
     const userId = req.params.userId;
-    User.findByPk(userId,{
-      include: [{ model: Portfolio }]
-  })
+    User.findByPk(userId)
         .then(user => {
             if (!user) {
                 return res.status(404).json({ message: 'User not found!' });
             }
-            const userData = {
-              id: user.id,
-              name: user.name,
-              email:user.email,
-              portfolioId: user.portfolio.id
-          };
-            res.status(200).json({ user: userData });
+           
+            res.status(200).json({ user: user});
         })
         .catch(err => console.log(err));
 }

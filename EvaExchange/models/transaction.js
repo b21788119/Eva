@@ -4,7 +4,7 @@ const Portfolio = require('./portfolio');
 const Share = require('./share');
 const PortfolioShare = require('./portfolioShare');
 
-const Transaction = db.define('transaction', {
+const Transaction = db.define('Transaction', {
   id: {
     type: Sequelize.INTEGER,
     autoIncrement: true,
@@ -14,14 +14,14 @@ const Transaction = db.define('transaction', {
   portfolioId: {
     type: Sequelize.INTEGER,
     references: {
-      model: db.models.portfolio,
+      model: Portfolio,
       key: 'id'
     }
   },
   shareSymbol: {
     type: Sequelize.STRING(3),
     references: {
-      model: db.models.share,
+      model: Share,
       key: 'symbol'
     }
   },
@@ -45,44 +45,7 @@ const Transaction = db.define('transaction', {
   timestamps: false
 });
 
-Transaction.belongsTo(Portfolio, { foreignKey: 'portfolioId' });
-Transaction.belongsTo(Share, { foreignKey: 'shareSymbol' });
-
-// After creating a transaction, update the corresponding portfolio share
-Transaction.afterCreate((transaction) => {
-  const portfolioShare = PortfolioShare.findOne({
-    where: {
-      portfolioId: transaction.portfolioId,
-      shareSymbol: transaction.shareSymbol
-    }
-  });
-
-  if (transaction.buyOrSell === 'BUY') {
-    portfolioShare.then((ps) => {
-      if (ps) {
-        ps.quantity += transaction.quantity;
-        ps.save();
-      } else {
-        PortfolioShare.create({
-          portfolioId: transaction.portfolioId,
-          shareSymbol: transaction.shareSymbol,
-          quantity: transaction.quantity
-        });
-      }
-    });
-  } else if (transaction.buyOrSell === 'SELL') {
-    portfolioShare.then((ps) => {
-      if (ps) {
-        // There must be enough share in the users portfolio to sell
-        if (ps.quantity >= transaction.quantity) {
-            ps.quantity -= transaction.quantity;
-            ps.save();
-          }
-      } else {
-        
-      }
-    });
-  }
-});
+Transaction.belongsTo(Portfolio, { foreignKey: 'portfolioId', as: 'portfolio' });
+Transaction.belongsTo(Share, { foreignKey: 'shareSymbol', as: 'share' });
 
 module.exports = Transaction;

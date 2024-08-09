@@ -1,7 +1,5 @@
 const Share = require('../models/share');
 
-// CRUD Controllers
-
 // Get all shares
 exports.getShares = (req, res, next) => {
   Share.findAll()
@@ -53,7 +51,7 @@ exports.updateShare = (req, res, next) => {
       if (!share) {
         return res.status(404).json({ message: 'Share not found!' });
       }
-      share.rate = updatedRate;
+      share.currentRate = updatedRate;
       return share.save();
     })
     .then(result => {

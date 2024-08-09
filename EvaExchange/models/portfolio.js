@@ -1,26 +1,32 @@
 const Sequelize = require('sequelize');
 const db = require('../util/database');
+const User = require('./user'); 
 
-const Portfolio = db.define('portfolio', {
-    id: {
-        type: Sequelize.INTEGER,
-        autoIncrement: true,
-        allowNull: false,
-        primaryKey: true
+const Portfolio = db.define('Portfolio', {
+  // Primary key
+  id: {
+    type: Sequelize.INTEGER,
+    autoIncrement: true,
+    allowNull: false,
+    primaryKey: true
+  },
+  // Foreign key to reference related user
+  userId: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+    references: {
+      model: User,
+      key: 'id'
     },
-    userId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-            model: db.models.user, // Use the User model instance instead of the string "user"
-            key: 'id'
-        },
-        onDelete: 'CASCADE'
-    }
+    onDelete: 'CASCADE'
+  },
+  name: {
+    type: Sequelize.STRING(255)
+  }
 });
 
-// Create a one-to-one association between User and Portfolio
-db.models.user.hasOne(Portfolio, { foreignKey: 'userId' });
-Portfolio.belongsTo(db.models.user, { foreignKey: 'userId' });
+// Create a one-to-one relationship between User and Portfolio
+User.hasOne(Portfolio, { foreignKey: 'userId', as: 'portfolio' });
+Portfolio.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 
 module.exports = Portfolio;
