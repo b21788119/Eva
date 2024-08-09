@@ -12,7 +12,7 @@ Router.delete('/:portfolioId', portfolioController.deletePortfolio);
 // Additional routes
 Router.get('/:portfolioId/statistics', portfolioController.getPortfolioStatistics);
 Router.get('/user/:userId', portfolioController.getPortfolioByUserId);
-Router.get('/user/:userId/stats', portfolioController.getPortfolioStatsByUserId);
+
 const portfolioShareRoutes = require('./portfolioShares');
 Router.use('/:portfolioId/shares/', portfolioShareRoutes);
 

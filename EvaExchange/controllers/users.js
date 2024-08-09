@@ -1,3 +1,4 @@
+const Sequelize = require('sequelize');
 const User = require('../models/user');
 const Portfolio = require('../models/portfolio');
 
@@ -30,21 +31,41 @@ exports.getUser = (req, res, next) => {
 exports.createUser = (req, res, next) => {
   const name = req.body.name;
   const email = req.body.email;
-  User.create({
-    name: name,
-    email: email
+
+  User.findOne({
+    where: {
+      [Sequelize.Op.or]: [
+        { email: email },
+        { name: name }
+      ]
+    }
   })
-    .then(result => {
-      console.log('Created User');
-      res.status(201).json({
-        message: 'User created successfully!',
-        user: result
-      });
+    .then(user => {
+      if (user) {
+        res.status(400).json({
+          message: 'Your email or name is already recorded in our system.'
+        });
+      } else {
+        User.create({
+          name: name,
+          email: email
+        })
+          .then(result => {
+            console.log('Created User');
+            res.status(201).json({
+              message: 'User created successfully!',
+              user: result
+            });
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
     })
     .catch(err => {
       console.log(err);
-    }); 
-}
+    });
+};
 
 //update user
 exports.updateUser = (req, res, next) => {

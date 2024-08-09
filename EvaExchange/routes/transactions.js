@@ -4,6 +4,7 @@ const Router = express.Router();
 
 Router.post('/', transactionController.createTransaction);
 Router.get('/', transactionController.getTransactions);
+Router.get('/portfolio/:portfolioId', transactionController.getTransactionsByPortfolioId);
 Router.get('/:id', transactionController.getTransaction);
 Router.put('/:id', transactionController.updateTransaction);
 Router.delete('/:id', transactionController.deleteTransaction);

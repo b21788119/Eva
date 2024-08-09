@@ -25,10 +25,10 @@ exports.getShare = (req, res, next) => {
 // Create share
 exports.createShare = (req, res, next) => {
   const symbol = req.body.symbol;
-  const rate = req.body.rate;
+  const currentPrice = req.body.currentPrice;
   Share.create({
     symbol: symbol,
-    rate: rate
+    currentPrice: currentPrice
   })
     .then(result => {
       console.log('Created Share');
@@ -45,13 +45,13 @@ exports.createShare = (req, res, next) => {
 // Update share
 exports.updateShare = (req, res, next) => {
   const symbol = req.params.symbol;
-  const updatedRate = req.body.rate;
+  const currentPrice = req.body.price;
   Share.findByPk(symbol)
     .then(share => {
       if (!share) {
         return res.status(404).json({ message: 'Share not found!' });
       }
-      share.currentRate = updatedRate;
+      share.currentPrice = currentPrice;
       return share.save();
     })
     .then(result => {

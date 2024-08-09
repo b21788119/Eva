@@ -42,8 +42,37 @@ const Transaction = db.define('Transaction', {
     defaultValue: Sequelize.NOW
   }
 }, {
-  timestamps: false
-});
+  timestamps: false,
+  hooks: {
+    afterCreate: async (transaction) => {
+      if (transaction.buyOrSell === 'SELL') {
+        const portfolioShare = await PortfolioShare.findOne({
+          where: {
+            portfolioId: transaction.portfolioId,
+            shareSymbol: transaction.shareSymbol,
+          },
+        });
+        if (portfolioShare) {
+          const totalQuantity = await Transaction.sum('quantity', {
+            where: {
+              portfolioId: transaction.portfolioId,
+              shareSymbol: transaction.shareSymbol,
+              buyOrSell: 'BUY',
+            },
+          }) - await Transaction.sum('quantity', {
+            where: {
+              portfolioId: transaction.portfolioId,
+              shareSymbol: transaction.shareSymbol,
+              buyOrSell: 'SELL',
+            },
+          });
+          if (totalQuantity <= 0) {
+            await portfolioShare.destroy();
+          }
+        }
+      }
+    },
+}});
 
 Transaction.belongsTo(Portfolio, { foreignKey: 'portfolioId', as: 'portfolio' });
 Transaction.belongsTo(Share, { foreignKey: 'shareSymbol', as: 'share' });

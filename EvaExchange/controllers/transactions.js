@@ -17,6 +17,11 @@ exports.createTransaction = async (req, res, next) => {
       return res.status(404).json({ error: 'Share not found' });
     }
     const portfolioShare = portfolio.shares.find((share) => share.shareSymbol === shareSymbol);
+    
+    if(!portfolioShare){
+      return res.status(404).json({ error: 'You should first buy this share!' });
+    }
+    
     if (buyOrSell === 'SELL' && portfolioShare) {
       const currentQuantity = await Transaction.sum('quantity', {
         where: {
@@ -56,6 +61,24 @@ exports.getTransactions = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.getTransactionsByPortfolioId = async (req, res, next) => {
+  try {
+    const { portfolioId } = req.params;
+    const transactions = await Transaction.findAll({
+      where: {
+        portfolioId,
+      },
+    });
+    if (!transactions) {
+      return res.status(404).json({ error: 'No transactions found for this portfolio' });
+    }
+    res.json(transactions);
+  } catch (err) {
+    next(err);
+  }
+};
+
 
 exports.getTransaction = async (req, res, next) => {
   try {
