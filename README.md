@@ -12,6 +12,9 @@
     Some statistical calculations for portfolios and portfolio shares have been considered, and the repository will be updated as I dive deeper into making the app more applicable to real-world scenarios.
   </li>
   <li>
+    Some endpoints were created just as templates. Some of them require admin privileges and authorization.
+  </li>
+  <li>
     <strong>Basic Representation of Entities and Relationships:</strong>
     <br><br>
     <img src="/BasicErDiagram.png" width="200">
