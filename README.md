@@ -15,7 +15,7 @@
     <strong>Postman Collection:</strong>
     <br>
     <br>
-     <a href="/Postman_collection.json" download> Download Collection</a>
+     <a href="/Postman_collection.json" download> Click Here</a>
   </li>
   
 </ul>
