@@ -18,7 +18,7 @@ exports.createTransaction = async (req, res, next) => {
     }
     const portfolioShare = portfolio.shares.find((share) => share.shareSymbol === shareSymbol);
     
-    if(!portfolioShare){
+    if(!portfolioShare && buyOrSell === 'SELL'){
       return res.status(404).json({ error: 'You should first buy this share!' });
     }
     
@@ -78,7 +78,6 @@ exports.getTransactionsByPortfolioId = async (req, res, next) => {
     next(err);
   }
 };
-
 
 exports.getTransaction = async (req, res, next) => {
   try {

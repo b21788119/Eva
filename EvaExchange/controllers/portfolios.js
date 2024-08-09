@@ -147,23 +147,33 @@ exports.getPortfolioByUserId = (req, res, next) => {
 
 // Create a new portfolio
 exports.createPortfolio = (req, res, next) => {
-    const userId = req.body.userId;
-    Portfolio.create({
-        userId: userId,
-        name:req.body.name
-    })
-        .then(result => {
-            console.log('Created Portfolio');
-            res.status(201).json({
+    Portfolio.findOne({ where: { userId: req.body.userId } })
+      .then(existingPortfolio => {
+        if (existingPortfolio) {
+          res.status(400).json({ message: 'A Portfolio already exists for this user.' });
+        } else {
+          Portfolio.create({
+            userId: req.body.userId,
+            name: req.body.name
+          })
+            .then(result => {
+              console.log('Created Portfolio');
+              res.status(201).json({
                 message: 'Portfolio created successfully!',
                 portfolio: result
+              });
+            })
+            .catch(err => {
+              console.log(err);
+              res.status(500).json({ message: 'Failed to create portfolio.' });
             });
-        })
-        .catch(err => {
-            console.log(err);
-            res.status(500).json({ message: 'Failed to create portfolio.' });
-        });
-};
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        res.status(500).json({ message: 'Error checking for existing portfolio.' });
+      });
+  };
 
 // Update portfolio
 exports.updatePortfolio = (req, res, next) => {
