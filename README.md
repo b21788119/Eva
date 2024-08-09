@@ -11,5 +11,11 @@
     <br>
     <img src="/DB Schema.png" width="200">
   </li>
+    <li>
+    <strong>Postman Collection:</strong>
+    <br>
+    <br>
+     <a href="/postman_collection.json" download>
+  </li>
   
 </ul>
