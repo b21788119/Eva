@@ -9,7 +9,7 @@ services:
       - "3000:3000"
     environment:
       - PG_DB=node_live_db
-      - PG_USER=francesco
+      - PG_USER=yavuz
       - PG_PASSWORD=12345
       - PG_HOST=node_db
     restart: always
@@ -23,7 +23,7 @@ services:
       - "5432:5432"
     environment:
       - POSTGRES_DB=node_live_db
-      - POSTGRES_USER=francesco
+      - POSTGRES_USER=yavuz
       - POSTGRES_PASSWORD=12345
     volumes:
       - node_db_data:/var/lib/postgresql/data
