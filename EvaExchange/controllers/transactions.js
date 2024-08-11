@@ -1,13 +1,17 @@
 const Transaction = require('../models/transaction');
 const Portfolio = require('../models/portfolio');
 const Share = require('../models/share');
+const User = require('../models/user')
 const PortfolioShare = require('../models/portfolioShare');
 
 exports.createTransaction = async (req, res, next) => {
   try {
     const { portfolioId, shareSymbol, buyOrSell, quantity } = req.body;
     const portfolio = await Portfolio.findByPk(portfolioId, {
-      include: [{ model: PortfolioShare, as: 'shares' }],
+      include: [
+        { model: PortfolioShare, as: 'shares' },
+        { model: User, as: 'user' },
+      ],
     });
     if (!portfolio) {
       return res.status(404).json({ error: 'Portfolio not found' });
@@ -47,6 +51,11 @@ exports.createTransaction = async (req, res, next) => {
       quantity,
       price: share.currentPrice,
     });
+    
+    // Log transaction details
+    console.log(`Transaction created: ${buyOrSell} ${quantity} shares of ${shareSymbol} in portfolio ${portfolioId} by user ${portfolio.user.name}`);
+    console.log(`Transaction details: ${JSON.stringify(transaction)}`);
+    
     res.json(transaction);
   } catch (err) {
     next(err);

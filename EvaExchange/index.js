@@ -65,7 +65,7 @@ db
       return Portfolio.create({
         userId: user.id,
         name: 'Share Portfolio'
-      });
+      },);
     }));
 
     await Share.bulkCreate([
@@ -94,13 +94,16 @@ db
     // Create 5 portfolio shares for each portfolio
     await Promise.all(portfolios.map(async portfolio => {
       for (const transaction of transactions) {
-        await Transaction.create({
+        const newTransaction = await Transaction.create({
           portfolioId: portfolio.id,
           shareSymbol: transaction.shareSymbol,
           buyOrSell: transaction.buyOrSell,
           quantity: transaction.quantity,
           price: transaction.price,
         });
+        console.log(`Transaction created: ${transaction.buyOrSell} ${transaction.quantity} shares of ${transaction.shareSymbol} in portfolio ${portfolio.id} by user with id : ${portfolio.userId}`);
+        console.log(`Transaction details: ${JSON.stringify(newTransaction)}`);
+
       }
       
     }));
