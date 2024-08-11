@@ -33,7 +33,7 @@
   </li>
   <li>
     <p>To run the applications in a Docker environment, navigate to the project directory and execute the following command:</p>
-  <pre><code>docker compose up --build --force-recreate</code></pre>
+  <pre><code>docker compose up --build </code></pre>
   
   <p>This command will build the Docker images.</p>
   </li>
