@@ -24,7 +24,7 @@
   <li>
     <strong>DB Schema:</strong>
     <br><br>
-    <img src="/DBSchema.png" width="200">
+    <img src="/DB Schema.png" width="200">
   </li>
   <li>
     <strong>Postman Collection:</strong>
