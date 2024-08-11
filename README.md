@@ -2,19 +2,19 @@
 <br>
 <ul>
   <li>
-    This repository contains a basic REST API built using Node.js, Express.js, Sequelize, and PostgreSQL, all packaged with Docker for easy deployment and scalability.
+    This repository includes a basic REST API developed using Node.js, Express.js, Sequelize, and PostgreSQL, all packaged with Docker for seamless deployment and scalability.
   </li>
   <li>
-    The API is designed with a monolithic architecture but can be easily converted to a microservices architecture if needed.
+    The API is built with a monolithic architecture, but it can be easily adapted to a microservices architecture if needed.
   </li>
   <li>
-    Certain problems, such as handling race conditions, managing share quantities in the market (considered infinite), and detailed buy/sell operations, have been intentionally omitted.
+    Certain complexities, such as race condition handling, managing share quantities in the market (assumed to be infinite), and detailed buy/sell operation logic, have been intentionally excluded.
   </li>
   <li>
-    Some statistical calculations for portfolios and portfolio shares have been tried, and the repository will be updated as I dive deeper into making the app more applicable to real-world scenarios.
+    Some basic statistical calculations for portfolios and portfolio shares have been implemented. The repository will be updated as I work on making the app more relevant to real-world use cases.
   </li>
   <li>
-    Some endpoints were created just as templates. Some of them may require admin privileges and authorization if used in a live environment.
+    Some endpoints were created as templates. In a live environment, these may require admin privileges and authorization.
   </li>
   <li>
     <strong>Basic Representation of Entities and Relationships:</strong>
@@ -24,11 +24,11 @@
   <li>
     <strong>DB Schema:</strong>
     <br><br>
-    <img src="/DB Schema.png" width="200">
+    <img src="/DBSchema.png" width="200">
   </li>
   <li>
     <strong>Postman Collection:</strong>
-    <br>
+    <br><br>
     <a href="/Postman_collection.json" download>Click Here</a>
   </li>
 </ul>
