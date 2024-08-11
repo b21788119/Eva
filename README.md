@@ -31,4 +31,10 @@
     <br><br>
     <a href="/Postman_collection.json" download>Click Here</a>
   </li>
+  <li>
+    <p>To run the applications in a Docker environment, navigate to the project directory and execute the following command:</p>
+  <pre><code>docker compose up --build --force-recreate</code></pre>
+  
+  <p>This command will build the Docker images, force a recreation of the containers, and start the applications within the Docker environment.</p>
+  </li>
 </ul>
